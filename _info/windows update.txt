@@ -1,0 +1,3 @@
+C:\Windows\SoftwareDistribution
+
+https://www.catalog.update.microsoft.com

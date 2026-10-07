@@ -1,0 +1,13 @@
+-----------from this dir-----------
+AppData\Local\Google\Chrome\User Data\Default
+AppData\Local\Google\Chrome\User Data\Profile 1\
+AppData\Local\Google\Chrome\User Data\Profile 2\
+AppData\Local\Google\Chrome\User Data\Profile N\
+-----------delete this files-----------
+ Service Worker\CacheStorage
+ Service Worker\ScriptCache
+ cache code
+ cach
+ file system
+-----------update google chrom----------
+restor data

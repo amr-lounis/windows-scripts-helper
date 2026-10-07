@@ -1,0 +1,4 @@
+about:config
+media.gmp-provider.enabled
+Double-click the media.gmp-provider.enabled preference to switch it from true to false 
+-------------------------

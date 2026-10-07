@@ -1,0 +1,2 @@
+win+F10
+bypass login with microsoft acount in windows 11 use : oobe\bypassnro

@@ -1,0 +1,9 @@
+adb shell su -c 'id'
+adb shell
+id
+getprop ro.product.manufacturer
+getprop ro.product.model
+am set-debug-app -w --persistent com.xiaomi.finddevice
+settings get --user 0 global debug_app
+settings get --user 0 global wait_for_debugger
+reboot
