@@ -21,7 +21,7 @@ echo  PATH EDITOR - Machine
 echo ==================================================
 echo.
 echo  [1] Show entries
-echo  [2] Add new entry
+echo  [2] Add new entries (multi-line)
 echo  [3] Delete entry
 echo.
 echo  [0] Exit
@@ -127,51 +127,74 @@ echo --------------------------------------------------
 pause
 goto :menu
 
-:: ================= ADD =================
+:: ================= ADD (multi-line) =================
 :add
 cls
 echo ==================================================
-echo  ADD NEW PATH ENTRY
+echo  ADD NEW PATH ENTRIES
 echo ==================================================
 echo.
+echo  Paste or type one directory per line.
+echo  An EMPTY line ends the input and saves.
+echo  (Pasting a block that ends with an empty line works.)
+echo.
 call :load_path
+call :split_raw
+set "NEW_PATH=!RAW_PATH!"
+set "ADDED=0"
+set "SKIPPED=0"
+
+:add_loop
 set "NEW_ENTRY="
-set /p "NEW_ENTRY=Enter directory path [empty=cancel]: "
-if "!NEW_ENTRY!"=="" goto :menu
+set /p "NEW_ENTRY="
+if "!NEW_ENTRY!"=="" goto :add_done
 set "NEW_ENTRY=!NEW_ENTRY:"=!"
 :trim_add
+if "!NEW_ENTRY!"=="" goto :add_done
 if "!NEW_ENTRY:~0,1!"==" " set "NEW_ENTRY=!NEW_ENTRY:~1!" & goto :trim_add
 if "!NEW_ENTRY:~-1!"==" " set "NEW_ENTRY=!NEW_ENTRY:~0,-1!" & goto :trim_add
 if "!NEW_ENTRY:~-1!"==";" set "NEW_ENTRY=!NEW_ENTRY:~0,-1!" & goto :trim_add
-if "!NEW_ENTRY!"=="" goto :menu
+if "!NEW_ENTRY!"=="" goto :add_done
 if "!NEW_ENTRY:~-1!"=="\" (
     if not "!NEW_ENTRY:~-2,1!"==":" set "NEW_ENTRY=!NEW_ENTRY:~0,-1!"
 )
 
+:: Missing directory: skip (no Y/N prompt, it would swallow pasted lines)
 if not exist "!NEW_ENTRY!\" (
-    echo.
-    echo [!] Warning: directory does not exist.
-    set "CONFIRM_ADD="
-    set /p "CONFIRM_ADD=Add anyway? [Y/N]: "
-    if /i not "!CONFIRM_ADD!"=="Y" goto :menu
+    echo  [SKIP] Directory does not exist: !NEW_ENTRY!
+    set /a SKIPPED+=1
+    goto :add_loop
 )
 
-:: Duplicate check over split entries - IF compare is safe for & and parens
+:: Duplicate check against existing entries AND entries added in this session
 set "DUP=0"
 for /l %%i in (1,1,!N!) do if /i "!E%%i!"=="!NEW_ENTRY!" set "DUP=1"
 if "!DUP!"=="1" (
-    echo.
-    echo [SKIP] Entry already exists.
-    pause
-    goto :menu
+    echo  [SKIP] Already exists: !NEW_ENTRY!
+    set /a SKIPPED+=1
+    goto :add_loop
 )
 
-echo.
-echo [ACTION] Adding: !NEW_ENTRY!
-if "!RAW_PATH!"=="" (
-    set "NEW_PATH=!NEW_ENTRY!"
+if defined NEW_PATH (
+    set "NEW_PATH=!NEW_PATH!;!NEW_ENTRY!"
 ) else (
-    set "NEW_PATH=!RAW_PATH!;!NEW_ENTRY!"
+    set "NEW_PATH=!NEW_ENTRY!"
+)
+set /a N+=1
+set "E!N!=!NEW_ENTRY!"
+set /a ADDED+=1
+echo  [ADD]  !NEW_ENTRY!
+goto :add_loop
+
+:add_done
+echo.
+echo --------------------------------------------------
+echo  To add: !ADDED!   Skipped: !SKIPPED!
+echo --------------------------------------------------
+if "!ADDED!"=="0" (
+    echo Nothing to save.
+    pause
+    goto :menu
 )
 call :save_path
 pause
