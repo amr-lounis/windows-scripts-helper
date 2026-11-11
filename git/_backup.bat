@@ -1,21 +1,25 @@
 @echo off
 setlocal enabledelayedexpansion
-set ARCHIVE_DIR=..\archive
+
+:: Current folder name
+for %%I in (.) do set "FOLDER_NAME=%%~nxI"
+
+set "ARCHIVE_DIR=..\%FOLDER_NAME%_archive"
 mkdir "%ARCHIVE_DIR%" 2>nul
 
 :: Find last version
 set MAX=0
-for %%F in ("%ARCHIVE_DIR%\v*.zip") do (
+for %%F in ("%ARCHIVE_DIR%\%FOLDER_NAME%_v*.zip") do (
     set "NAME=%%~nF"
-    set "NUM=!NAME:~1!"
+    set "NUM=!NAME:%FOLDER_NAME%_v=!"
     if !NUM! gtr !MAX! set MAX=!NUM!
 )
 set /a NEXT=MAX+1
-set VERSION=v%NEXT%
+set "VERSION=%FOLDER_NAME%_v%NEXT%"
 
 :: Commit
 set /p COMMIT_VALUE=Enter commit message [%VERSION%]: 
-if "%COMMIT_VALUE%"=="" set COMMIT_VALUE=%VERSION%
+if "%COMMIT_VALUE%"=="" set "COMMIT_VALUE=%VERSION%"
 
 git add .
 git commit -m "%COMMIT_VALUE%"
