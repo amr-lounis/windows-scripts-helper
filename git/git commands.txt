@@ -1,0 +1,39 @@
+git init
+
+git remote add origin https://github.com/hackamro/GRAPHQL_server
+git add .
+git commit -m "new"
+git log
+git push origin master
+
+git log
+git checkout 
+git status
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+git config --global --add safe.directory .
+#
+git config --global user.name "amr.lounis"
+git config --global user.email "amr.lounis"
+git config --global --list
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ backup
+# reset source to last commit
+git reset --hard HEAD
+
+# backup last commit as zip file
+git add .
+git commit -m "v5"
+git archive --format zip --output ../p1-v5.zip HEAD
+
+or
+
+zip -r file.zip . -x "*.git*" "node_modules/*"
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+git log --oneline
+git revert 3715474
+git reset --hard c9cf192
+git reset --hard <commit-hash>
+git revert <commit-hash>
+
+
+git rm --cached -r ./
