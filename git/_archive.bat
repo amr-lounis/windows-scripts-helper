@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 :: Current folder name
 for %%I in (.) do set "FOLDER_NAME=%%~nxI"
 
-set "ARCHIVE_DIR=..\%FOLDER_NAME%_archive"
+set "ARCHIVE_DIR=../archive/%FOLDER_NAME%_archive"
 mkdir "%ARCHIVE_DIR%" 2>nul
 
 :: Find last version
