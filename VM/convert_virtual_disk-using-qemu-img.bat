@@ -6,14 +6,14 @@ echo        QEMU-IMG Disk Converter
 echo ==========================================
 echo.
 
-rem ---- Supported formats (qemu name / output extension) ----
-set "FMT1=raw"   & set "EXT1=img"
-set "FMT2=qcow2" & set "EXT2=qcow2"
-set "FMT3=vmdk"  & set "EXT3=vmdk"
-set "FMT4=vdi"   & set "EXT4=vdi"
-set "FMT5=vpc"   & set "EXT5=vhd"
-set "FMT6=vhdx"  & set "EXT6=vhdx"
-set "FMT7=qed"   & set "EXT7=qed"
+rem ---- Supported formats (qemu name / output extension / display label) ----
+set "FMT1=raw"   & set "EXT1=img"   & set "LBL1=raw"
+set "FMT2=qcow2" & set "EXT2=qcow2" & set "LBL2=qcow2"
+set "FMT3=vmdk"  & set "EXT3=vmdk"  & set "LBL3=vmdk"
+set "FMT4=vdi"   & set "EXT4=vdi"   & set "LBL4=vdi"
+set "FMT5=vpc"   & set "EXT5=vhd"   & set "LBL5=vhd (vpc)"
+set "FMT6=vhdx"  & set "EXT6=vhdx"  & set "LBL6=vhdx"
+set "FMT7=qed"   & set "EXT7=qed"   & set "LBL7=qed"
 set COUNT=7
 
 rem ---- Use %1 if provided (drag and drop or command line), otherwise ask ----
@@ -69,7 +69,7 @@ echo.
 echo Convert to:
 for /l %%J in (1,1,%COUNT%) do (
     set "F=!FMT%%J!"
-    if not "!F!"=="!SRCFMT!" echo   %%J - !F!
+    if not "!F!"=="!SRCFMT!" echo   %%J - !LBL%%J!
 )
 echo   A - All of the above
 echo.
@@ -100,11 +100,12 @@ goto done
 :convert
 set "F=!FMT%1!"
 set "E=!EXT%1!"
+set "L=!LBL%1!"
 echo.
-echo Converting to !F! ...
+echo Converting to !L! ...
 qemu-img convert -p -f %SRCFMT% -O !F! "%SRC%" "%BASE%.!E!"
 if errorlevel 1 (
-    echo [!] Conversion to !F! failed.
+    echo [!] Conversion to !L! failed.
 ) else (
     echo [OK] Created: "%BASE%.!E!"
 )
